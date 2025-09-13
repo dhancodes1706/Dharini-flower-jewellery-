@@ -1,94 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dharini Flower Jewellery</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: Arial; margin:0; text-align:center; background:#fff0f6; color:#333; }
+    header { padding:2rem; background:#ffdde9; }
+    header h1 { color:#d63384; font-size:2.5rem; }
+    section { padding:2rem; }
+    .product { background:white; border-radius:10px; padding:1.5rem; margin:1rem auto; max-width:300px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+    .product h3 { color:#d63384; }
+    button { display:inline-block; margin-top:1rem; padding:0.5rem 1rem; background:#d63384; color:white; border:none; border-radius:6px; cursor:pointer; }
+    button:hover { background:#a61e63; }
+    .admin { padding:2rem; background:#ffe6f0; margin-top:2rem; }
+    .admin input { padding:0.5rem; margin:0.3rem; width:40%; border-radius:5px; border:1px solid #ccc; }
+    footer { padding:1rem; background:#ffdde9; margin-top:2rem; }
+  </style>
 </head>
 <body>
-  <!-- Hero Section -->
-  <header>
-    <h1>Dharini Flower Jewellery</h1>
-    <p>
-      Timeless handcrafted flower jewellery. Legacy of 5+ decades. Started by Nani, perfected by Mom. Real and artificial flower jewellery for weddings, parties, and daily elegance.
-    </p>
-  </header>
 
-  <!-- Products Section -->
-  <section class="products" id="productSection">
-    <h2>Our Collection</h2>
-  </section>
+<header>
+  <h1>Dharini Flower Jewellery</h1>
+  <p>Timeless handcrafted flower jewellery. Legacy of 5+ decades. Started by Nani, perfected by Mom. Real and artificial jewellery for weddings, parties, and daily elegance.</p>
+</header>
 
-  <!-- Admin Section -->
-  <section class="admin">
-    <h2>Admin Panel (Edit Products)</h2>
-    <input type="text" id="productName" placeholder="Product Name"/>
-    <input type="text" id="productPrice" placeholder="Price"/>
-    <button onclick="addProduct()">Add Product</button>
-  </section>
+<section id="productSection">
+  <h2>Our Collection</h2>
+</section>
 
-  <footer>
-    <p>© Dharini Flower Jewellery</p>
-  </footer>
+<section class="admin">
+  <h2>Admin Panel</h2>
+  <input type="text" id="productName" placeholder="Product Name">
+  <input type="text" id="productPrice" placeholder="Price">
+  <button onclick="addProduct()">Add Product</button>
+</section>
 
-  <script>
-    // WhatsApp number
-    const whatsappNumber = "814122933";
+<footer>
+  <p>© Dharini Flower Jewellery</p>
+</footer>
 
-    // Initial products
-    let products = [
-      { name: "Rose Flower Jewellery", price: "₹1500" },
-      { name: "Artificial Lotus Jewellery", price: "₹1200" },
-      { name: "Bridal Jasmine Set", price: "₹2500" }
-    ];
+<script>
+const whatsappNumber = "814122933";
+let products = [
+  { name: "Rose Flower Jewellery", price: "₹1500" },
+  { name: "Artificial Lotus Jewellery", price: "₹1200" },
+  { name: "Bridal Jasmine Set", price: "₹2500" }
+];
 
-    // Render products
-    function renderProducts() {
-      const section = document.getElementById("productSection");
-      section.innerHTML = "<h2>Our Collection</h2>";
-      products.forEach((p, index) => {
-        const div = document.createElement("div");
-        div.className = "product";
-        div.innerHTML = `
-          <h3>${p.name}</h3>
-          <p>${p.price}</p>
-          <button onclick="orderProduct(${index})">Order on WhatsApp</button>
-          <button onclick="removeProduct(${index})" style="background:red;">Remove</button>
-        `;
-        section.appendChild(div);
-      });
-    }
+function renderProducts() {
+  const section = document.getElementById("productSection");
+  section.innerHTML = "<h2>Our Collection</h2>";
+  products.forEach((p, index) => {
+    const div = document.createElement("div");
+    div.className = "product";
+    div.innerHTML = `
+      <h3>${p.name}</h3>
+      <p>${p.price}</p>
+      <button onclick="orderProduct(${index})">Order on WhatsApp</button>
+      <button onclick="removeProduct(${index})" style="background:red;">Remove</button>
+    `;
+    section.appendChild(div);
+  });
+}
 
-    // Order via WhatsApp
-    function orderProduct(index) {
-      const p = products[index];
-      const message = `Hi Tanvi Shah, I would like to order the ${p.name} priced at ${p.price}. Is it available?`;
-      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
-    }
+function orderProduct(index) {
+  const p = products[index];
+  const message = `Hi Tanvi Shah, I would like to order the ${p.name} priced at ${p.price}. Is it available?`;
+  window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
+}
 
-    // Add product from admin
-    function addProduct() {
-      const name = document.getElementById("productName").value;
-      const price = document.getElementById("productPrice").value;
-      if(name && price) {
-        products.push({name, price});
-        document.getElementById("productName").value = "";
-        document.getElementById("productPrice").value = "";
-        renderProducts();
-      } else {
-        alert("Enter both name and price");
-      }
-    }
-
-    // Remove product
-    function removeProduct(index) {
-      products.splice(index, 1);
-      renderProducts();
-    }
-
-    // Initial render
+function addProduct() {
+  const name = document.getElementById("productName").value;
+  const price = document.getElementById("productPrice").value;
+  if(name && price){
+    products.push({name, price});
+    document.getElementById("productName").value = "";
+    document.getElementById("productPrice").value = "";
     renderProducts();
-  </script>
+  } else {
+    alert("Enter both name and price");
+  }
+}
+
+function removeProduct(index){
+  products.splice(index, 1);
+  renderProducts();
+}
+
+renderProducts();
+</script>
+
 </body>
 </html>
