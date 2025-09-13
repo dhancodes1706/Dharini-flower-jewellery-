@@ -19,11 +19,8 @@ section { padding:2rem 1rem; }
 .product-card p { margin:0; font-weight:bold;}
 .product-card button { margin-top:0.5rem; padding:0.5rem 1rem; border:none; border-radius:8px; background:#d63384; color:white; cursor:pointer; transition:0.3s;}
 .product-card button:hover { background:#a61e63;}
-.admin-panel { background:#ffe6f0; padding:2rem; margin:2rem auto; max-width:500px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-.admin-panel input, .admin-panel button { width:80%; padding:0.6rem; margin:0.5rem 0; border-radius:8px; border:1px solid #ccc; font-size:1rem;}
-.admin-panel button { background:#d63384; color:white; border:none; cursor:pointer; transition:0.3s;}
-.admin-panel button:hover { background:#a61e63;}
-.admin-content { display:none; margin-top:1rem;}
+.admin-btn { position:fixed; bottom:15px; right:15px; background:#d63384; color:white; border:none; padding:0.8rem 1rem; border-radius:50px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:0.3s;}
+.admin-btn:hover { background:#a61e63;}
 footer { background:#ffd6e8; padding:2rem 1rem; text-align:center; margin-top:2rem; font-size:0.9rem; color:#660033;}
 footer a { color:#660033; text-decoration:none;}
 </style>
@@ -40,25 +37,13 @@ footer a { color:#660033; text-decoration:none;}
   <div class="products-grid" id="productsGrid"></div>
 </section>
 
-<section class="admin-panel">
-  <h2 style="color:#d63384;">Admin Panel</h2>
-  <input type="text" id="adminUsername" placeholder="Username"><br>
-  <input type="password" id="adminPassword" placeholder="Password"><br>
-  <button onclick="loginAdmin()">Login</button>
-
-  <div class="admin-content" id="adminContent">
-    <input type="text" id="productName" placeholder="Product Name"><br>
-    <input type="text" id="productPrice" placeholder="Price"><br>
-    <input type="file" id="productImg" accept="image/*"><br>
-    <button onclick="addProduct()">Add Product</button>
-  </div>
-</section>
-
 <section style="padding:2rem; background:#ffe6f0; margin-top:2rem;">
   <h2 style="color:#d63384;">About Us</h2>
   <p>Dharini Flower Jewellery – A legacy of over 5 decades. Started by Nani, perfected by Mom, creating timeless handcrafted real and artificial flower jewellery for every celebration.<br>
   Contact: +91 8141229333 | +91 9773138773</p>
 </section>
+
+<button class="admin-btn" onclick="window.location.href='admin.html'">Admin</button>
 
 <footer>
   <p>© Dharini Flower Jewellery</p>
@@ -67,10 +52,6 @@ footer a { color:#660033; text-decoration:none;}
 <script>
 // WhatsApp number
 const whatsappNumber = "+918141229333";
-
-// Admin login credentials
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "1234";
 
 // Products array
 let products = [];
@@ -99,49 +80,11 @@ function orderProduct(index){
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
 }
 
-// Admin login
-function loginAdmin(){
-  const user = document.getElementById("adminUsername").value;
-  const pass = document.getElementById("adminPassword").value;
-  if(user === ADMIN_USER && pass === ADMIN_PASS){
-    document.getElementById("adminContent").style.display = "block";
-    alert("Admin login successful!");
-  } else {
-    alert("Incorrect username or password");
-  }
+// Load products from localStorage (so admin changes persist)
+if(localStorage.getItem("products")){
+  products = JSON.parse(localStorage.getItem("products"));
+  renderProducts();
 }
-
-// Add product with Cloudinary
-function addProduct(){
-  const name = document.getElementById("productName").value;
-  const price = document.getElementById("productPrice").value;
-  const file = document.getElementById("productImg").files[0];
-
-  if(!name || !price || !file){
-    alert("Enter all fields and select an image");
-    return;
-  }
-
-  const url = `https://api.cloudinary.com/v1_1/dxe4vttzv/upload`;
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', 'dharini_upload');
-
-  fetch(url, { method:'POST', body: formData })
-  .then(res => res.json())
-  .then(data => {
-    const product = {name, price, img: data.secure_url};
-    products.push(product);
-    renderProducts();
-    document.getElementById("productName").value = "";
-    document.getElementById("productPrice").value = "";
-    document.getElementById("productImg").value = "";
-  })
-  .catch(err => alert("Upload failed: " + err));
-}
-
-// Initial render
-renderProducts();
 </script>
 
 </body>
