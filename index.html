@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dharini Flower Jewellery</title>
-  <style>
-    body { font-family: Arial; margin:0; text-align:center; background:#fff0f6; color:#333; }
-    header { padding:2rem; background:#ffdde9; }
-    header h1 { color:#d63384; font-size:2.5rem; }
-    section { padding:2rem; }
-    .product { background:white; border-radius:10px; padding:1.5rem; margin:1rem auto; max-width:300px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
-    .product h3 { color:#d63384; }
-    button { display:inline-block; margin-top:1rem; padding:0.5rem 1rem; background:#d63384; color:white; border:none; border-radius:6px; cursor:pointer; }
-    button:hover { background:#a61e63; }
-    .admin { padding:2rem; background:#ffe6f0; margin-top:2rem; }
-    .admin input { padding:0.5rem; margin:0.3rem; width:40%; border-radius:5px; border:1px solid #ccc; }
-    footer { padding:1rem; background:#ffdde9; margin-top:2rem; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dharini Flower Jewellery</title>
+<style>
+body { font-family: Arial; margin:0; text-align:center; background:#fff0f6; color:#333; }
+header { padding:2rem; background:#ffdde9; }
+header h1 { color:#d63384; font-size:2.5rem; }
+section { padding:2rem; }
+.product { background:white; border-radius:10px; padding:1.5rem; margin:1rem auto; max-width:300px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+.product img { width:100%; border-radius:10px; }
+.product h3 { color:#d63384; }
+button { display:inline-block; margin-top:1rem; padding:0.5rem 1rem; background:#d63384; color:white; border:none; border-radius:6px; cursor:pointer; }
+button:hover { background:#a61e63; }
+.admin { padding:2rem; background:#ffe6f0; margin-top:2rem; }
+.admin input { padding:0.5rem; margin:0.3rem; width:40%; border-radius:5px; border:1px solid #ccc; }
+footer { padding:1rem; background:#ffdde9; margin-top:2rem; }
+.adminButton { margin-top:2rem; }
+</style>
 </head>
 <body>
 
 <header>
   <h1>Dharini Flower Jewellery</h1>
-  <p>Timeless handcrafted flower jewellery. Legacy of 5+ decades. Started by Nani, perfected by Mom. Real and artificial jewellery for weddings, parties, and daily elegance.</p>
+  <p>
+    Timeless handcrafted flower jewellery. Legacy of 5+ decades. Started by Nani, perfected by Mom. Real and artificial jewellery for weddings, parties, and daily elegance.
+  </p>
 </header>
 
 <section id="productSection">
@@ -33,7 +37,20 @@
   <h2>Admin Panel</h2>
   <input type="text" id="productName" placeholder="Product Name">
   <input type="text" id="productPrice" placeholder="Price">
+  <input type="text" id="productImg" placeholder="Image filename (e.g. rose.jpg)">
   <button onclick="addProduct()">Add Product</button>
+</section>
+
+<div class="adminButton">
+  <a href="admin.html"><button style="background:#333;">Admin</button></a>
+</div>
+
+<section style="padding:2rem; background:#ffe6f0; margin-top:2rem;">
+  <h2>About Us</h2>
+  <p>
+    Dharini Flower Jewellery – A legacy of over 5 decades. Started by Nani, perfected by Mom, creating timeless handcrafted real and artificial flower jewellery for every celebration.  
+    <br>Contact us: +91 8141229333 | +91 9773138773
+  </p>
 </section>
 
 <footer>
@@ -41,13 +58,25 @@
 </footer>
 
 <script>
-const whatsappNumber = "814122933";
+// WhatsApp number
+const whatsappNumber = "+918141229333";
+
+// Initial products
 let products = [
-  { name: "Rose Flower Jewellery", price: "₹1500" },
-  { name: "Artificial Lotus Jewellery", price: "₹1200" },
-  { name: "Bridal Jasmine Set", price: "₹2500" }
+  { name: "Rose Flower Jewellery", price: "₹1500", img: "rose.jpg" },
+  { name: "Artificial Lotus Jewellery", price: "₹1200", img: "lotus.jpg" },
+  { name: "Bridal Jasmine Set", price: "₹2500", img: "jasmine.jpg" }
 ];
 
+// Check if admin access
+const isAdmin = window.location.hash === "#admin";
+if(isAdmin){
+  document.querySelector(".admin").style.display = "block";
+}else{
+  document.querySelector(".admin").style.display = "none";
+}
+
+// Render products
 function renderProducts() {
   const section = document.getElementById("productSection");
   section.innerHTML = "<h2>Our Collection</h2>";
@@ -55,39 +84,46 @@ function renderProducts() {
     const div = document.createElement("div");
     div.className = "product";
     div.innerHTML = `
+      <img src="${p.img}" alt="${p.name}">
       <h3>${p.name}</h3>
       <p>${p.price}</p>
       <button onclick="orderProduct(${index})">Order on WhatsApp</button>
-      <button onclick="removeProduct(${index})" style="background:red;">Remove</button>
+      ${isAdmin ? `<button onclick="removeProduct(${index})" style="background:red;">Remove</button>` : ""}
     `;
     section.appendChild(div);
   });
 }
 
+// Order via WhatsApp
 function orderProduct(index) {
   const p = products[index];
   const message = `Hi Tanvi Shah, I would like to order the ${p.name} priced at ${p.price}. Is it available?`;
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
 }
 
+// Add product
 function addProduct() {
   const name = document.getElementById("productName").value;
   const price = document.getElementById("productPrice").value;
-  if(name && price){
-    products.push({name, price});
+  const img = document.getElementById("productImg").value;
+  if(name && price && img){
+    products.push({name, price, img});
     document.getElementById("productName").value = "";
     document.getElementById("productPrice").value = "";
+    document.getElementById("productImg").value = "";
     renderProducts();
   } else {
-    alert("Enter both name and price");
+    alert("Enter name, price, and image filename");
   }
 }
 
+// Remove product
 function removeProduct(index){
   products.splice(index, 1);
   renderProducts();
 }
 
+// Initial render
 renderProducts();
 </script>
 
