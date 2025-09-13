@@ -10,8 +10,7 @@ body { margin:0; font-family: 'Roboto', sans-serif; background:#fff0f6; color:#3
 header { padding:3rem 1rem; background: linear-gradient(to right, #ffd6e8, #ffb3d9); text-align:center;}
 header h1 { font-family: 'Playfair Display', serif; font-size:3rem; color:#d63384; margin-bottom:0.5rem;}
 header p { font-size:1.2rem; max-width:600px; margin:0 auto; color:#660033;}
-section { padding:2rem 1rem; }
-.products-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1.5rem; margin-top:1rem; }
+.products-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1.5rem; margin:2rem 1rem;}
 .product-card { background:white; border-radius:15px; box-shadow:0 10px 20px rgba(0,0,0,0.1); padding:1rem; text-align:center; transition: transform 0.3s;}
 .product-card:hover { transform: translateY(-5px);}
 .product-card img { width:100%; border-radius:12px; object-fit:cover; height:200px;}
@@ -21,8 +20,8 @@ section { padding:2rem 1rem; }
 .product-card button:hover { background:#a61e63;}
 .admin-btn { position:fixed; bottom:15px; right:15px; background:#d63384; color:white; border:none; padding:0.8rem 1rem; border-radius:50px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:0.3s;}
 .admin-btn:hover { background:#a61e63;}
+section.about { padding:2rem 1rem; background:#ffe6f0; margin-top:2rem; text-align:center;}
 footer { background:#ffd6e8; padding:2rem 1rem; text-align:center; margin-top:2rem; font-size:0.9rem; color:#660033;}
-footer a { color:#660033; text-decoration:none;}
 </style>
 </head>
 <body>
@@ -32,12 +31,10 @@ footer a { color:#660033; text-decoration:none;}
   <p>Timeless handcrafted flower jewellery. Legacy of 5+ decades. Started by Nani, perfected by Mom. Real and artificial jewellery for weddings, parties, and daily elegance.</p>
 </header>
 
-<section id="productsSection">
-  <h2 style="text-align:center; color:#d63384;">Our Collection</h2>
-  <div class="products-grid" id="productsGrid"></div>
+<section class="products-grid" id="productsGrid">
 </section>
 
-<section style="padding:2rem; background:#ffe6f0; margin-top:2rem;">
+<section class="about">
   <h2 style="color:#d63384;">About Us</h2>
   <p>Dharini Flower Jewellery – A legacy of over 5 decades. Started by Nani, perfected by Mom, creating timeless handcrafted real and artificial flower jewellery for every celebration.<br>
   Contact: +91 8141229333 | +91 9773138773</p>
@@ -45,24 +42,27 @@ footer a { color:#660033; text-decoration:none;}
 
 <button class="admin-btn" onclick="window.location.href='admin.html'">Admin</button>
 
-<footer>
-  <p>© Dharini Flower Jewellery</p>
-</footer>
-
 <script>
 // WhatsApp number
 const whatsappNumber = "+918141229333";
 
-// Products array
-let products = [];
+// Demo products
+let products = [
+  {name:"Rose Earrings", price:"₹499", img:"https://i.ibb.co/5nXW5wL/rose-earrings.jpg"},
+  {name:"Lotus Necklace", price:"₹799", img:"https://i.ibb.co/Z6gzN2v/lotus-necklace.jpg"},
+  {name:"Jasmine Bracelet", price:"₹399", img:"https://i.ibb.co/YR3nR0Z/jasmine-bracelet.jpg"}
+];
+
+// Load products from localStorage if available
+if(localStorage.getItem("products")) products = JSON.parse(localStorage.getItem("products"));
 
 // Render products
-function renderProducts() {
+function renderProducts(){
   const grid = document.getElementById("productsGrid");
   grid.innerHTML = "";
-  products.forEach((p, i) => {
+  products.forEach((p,i)=>{
     const card = document.createElement("div");
-    card.className = "product-card";
+    card.className="product-card";
     card.innerHTML = `
       <img src="${p.img}" alt="${p.name}">
       <h3>${p.name}</h3>
@@ -80,11 +80,8 @@ function orderProduct(index){
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
 }
 
-// Load products from localStorage (so admin changes persist)
-if(localStorage.getItem("products")){
-  products = JSON.parse(localStorage.getItem("products"));
-  renderProducts();
-}
+// Initial render
+renderProducts();
 </script>
 
 </body>
