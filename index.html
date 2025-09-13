@@ -1,37 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dharini Flower Jewellery</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Hero Section -->
   <header>
     <h1>Dharini Flower Jewellery</h1>
-    <p>Timeless handcrafted flower jewellery. Legacy of 5+ decades.</p>
+    <p>
+      Timeless handcrafted flower jewellery. Legacy of 5+ decades. Started by Nani, perfected by Mom. Real and artificial flower jewellery for weddings, parties, and daily elegance.
+    </p>
   </header>
 
-  <section class="products">
-    <div class="product">
-      <h3>Rose Flower Jewellery</h3>
-      <p>₹1500</p>
-      <a href="https://wa.me/919876543210?text=Hi, I want to order Rose Flower Jewellery" target="_blank">Order on WhatsApp</a>
-    </div>
-    <div class="product">
-      <h3>Artificial Lotus Jewellery</h3>
-      <p>₹1200</p>
-      <a href="https://wa.me/919876543210?text=Hi, I want to order Artificial Lotus Jewellery" target="_blank">Order on WhatsApp</a>
-    </div>
-    <div class="product">
-      <h3>Bridal Jasmine Set</h3>
-      <p>₹2500</p>
-      <a href="https://wa.me/919876543210?text=Hi, I want to order Bridal Jasmine Set" target="_blank">Order on WhatsApp</a>
-    </div>
+  <!-- Products Section -->
+  <section class="products" id="productSection">
+    <h2>Our Collection</h2>
+  </section>
+
+  <!-- Admin Section -->
+  <section class="admin">
+    <h2>Admin Panel (Edit Products)</h2>
+    <input type="text" id="productName" placeholder="Product Name"/>
+    <input type="text" id="productPrice" placeholder="Price"/>
+    <button onclick="addProduct()">Add Product</button>
   </section>
 
   <footer>
     <p>© Dharini Flower Jewellery</p>
   </footer>
+
+  <script>
+    // WhatsApp number
+    const whatsappNumber = "814122933";
+
+    // Initial products
+    let products = [
+      { name: "Rose Flower Jewellery", price: "₹1500" },
+      { name: "Artificial Lotus Jewellery", price: "₹1200" },
+      { name: "Bridal Jasmine Set", price: "₹2500" }
+    ];
+
+    // Render products
+    function renderProducts() {
+      const section = document.getElementById("productSection");
+      section.innerHTML = "<h2>Our Collection</h2>";
+      products.forEach((p, index) => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <h3>${p.name}</h3>
+          <p>${p.price}</p>
+          <button onclick="orderProduct(${index})">Order on WhatsApp</button>
+          <button onclick="removeProduct(${index})" style="background:red;">Remove</button>
+        `;
+        section.appendChild(div);
+      });
+    }
+
+    // Order via WhatsApp
+    function orderProduct(index) {
+      const p = products[index];
+      const message = `Hi Tanvi Shah, I would like to order the ${p.name} priced at ${p.price}. Is it available?`;
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
+    }
+
+    // Add product from admin
+    function addProduct() {
+      const name = document.getElementById("productName").value;
+      const price = document.getElementById("productPrice").value;
+      if(name && price) {
+        products.push({name, price});
+        document.getElementById("productName").value = "";
+        document.getElementById("productPrice").value = "";
+        renderProducts();
+      } else {
+        alert("Enter both name and price");
+      }
+    }
+
+    // Remove product
+    function removeProduct(index) {
+      products.splice(index, 1);
+      renderProducts();
+    }
+
+    // Initial render
+    renderProducts();
+  </script>
 </body>
 </html>
