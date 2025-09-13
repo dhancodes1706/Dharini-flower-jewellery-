@@ -14,7 +14,7 @@ section { padding:2rem; }
 .product h3 { color:#d63384; }
 button { display:inline-block; margin-top:1rem; padding:0.5rem 1rem; background:#d63384; color:white; border:none; border-radius:6px; cursor:pointer; }
 button:hover { background:#a61e63; }
-.admin { padding:2rem; background:#ffe6f0; margin-top:2rem; }
+.admin { padding:2rem; background:#ffe6f0; margin-top:2rem; display:none; }
 .admin input { padding:0.5rem; margin:0.3rem; width:40%; border-radius:5px; border:1px solid #ccc; }
 footer { padding:1rem; background:#ffdde9; margin-top:2rem; }
 .adminButton { margin-top:2rem; }
@@ -33,17 +33,19 @@ footer { padding:1rem; background:#ffdde9; margin-top:2rem; }
   <h2>Our Collection</h2>
 </section>
 
-<section class="admin">
+<section class="admin" id="adminPanel">
   <h2>Admin Panel</h2>
-  <input type="text" id="productName" placeholder="Product Name">
-  <input type="text" id="productPrice" placeholder="Price">
-  <input type="text" id="productImg" placeholder="Image filename (e.g. rose.jpg)">
-  <button onclick="addProduct()">Add Product</button>
-</section>
+  <input type="text" id="adminUsername" placeholder="Username"><br>
+  <input type="password" id="adminPassword" placeholder="Password"><br>
+  <button onclick="loginAdmin()">Login</button>
 
-<div class="adminButton">
-  <a href="admin.html"><button style="background:#333;">Admin</button></a>
-</div>
+  <div id="adminContent" style="display:none; margin-top:1rem;">
+    <input type="text" id="productName" placeholder="Product Name">
+    <input type="text" id="productPrice" placeholder="Price">
+    <input type="file" id="productImg" accept="image/*">
+    <button onclick="addProduct()">Add Product</button>
+  </div>
+</section>
 
 <section style="padding:2rem; background:#ffe6f0; margin-top:2rem;">
   <h2>About Us</h2>
@@ -57,24 +59,19 @@ footer { padding:1rem; background:#ffdde9; margin-top:2rem; }
   <p>© Dharini Flower Jewellery</p>
 </footer>
 
+<!-- Cloudinary scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+
 <script>
 // WhatsApp number
 const whatsappNumber = "+918141229333";
 
-// Initial products
-let products = [
-  { name: "Rose Flower Jewellery", price: "₹1500", img: "rose.jpg" },
-  { name: "Artificial Lotus Jewellery", price: "₹1200", img: "lotus.jpg" },
-  { name: "Bridal Jasmine Set", price: "₹2500", img: "jasmine.jpg" }
-];
+// Admin login credentials
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "1234";
 
-// Check if admin access
-const isAdmin = window.location.hash === "#admin";
-if(isAdmin){
-  document.querySelector(".admin").style.display = "block";
-}else{
-  document.querySelector(".admin").style.display = "none";
-}
+// Products array
+let products = [];
 
 // Render products
 function renderProducts() {
@@ -88,39 +85,57 @@ function renderProducts() {
       <h3>${p.name}</h3>
       <p>${p.price}</p>
       <button onclick="orderProduct(${index})">Order on WhatsApp</button>
-      ${isAdmin ? `<button onclick="removeProduct(${index})" style="background:red;">Remove</button>` : ""}
     `;
     section.appendChild(div);
   });
 }
 
-// Order via WhatsApp
-function orderProduct(index) {
+// WhatsApp order
+function orderProduct(index){
   const p = products[index];
   const message = `Hi Tanvi Shah, I would like to order the ${p.name} priced at ${p.price}. Is it available?`;
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
 }
 
-// Add product
-function addProduct() {
-  const name = document.getElementById("productName").value;
-  const price = document.getElementById("productPrice").value;
-  const img = document.getElementById("productImg").value;
-  if(name && price && img){
-    products.push({name, price, img});
-    document.getElementById("productName").value = "";
-    document.getElementById("productPrice").value = "";
-    document.getElementById("productImg").value = "";
-    renderProducts();
+// Admin login
+function loginAdmin(){
+  const user = document.getElementById("adminUsername").value;
+  const pass = document.getElementById("adminPassword").value;
+  if(user === ADMIN_USER && pass === ADMIN_PASS){
+    document.getElementById("adminContent").style.display = "block";
+    alert("Admin login successful!");
   } else {
-    alert("Enter name, price, and image filename");
+    alert("Incorrect username or password");
   }
 }
 
-// Remove product
-function removeProduct(index){
-  products.splice(index, 1);
-  renderProducts();
+// Add product with Cloudinary
+function addProduct(){
+  const name = document.getElementById("productName").value;
+  const price = document.getElementById("productPrice").value;
+  const file = document.getElementById("productImg").files[0];
+
+  if(!name || !price || !file){
+    alert("Enter all fields and select an image");
+    return;
+  }
+
+  const url = `https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/upload`;
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'YOUR_UPLOAD_PRESET');
+
+  fetch(url, { method:'POST', body: formData })
+  .then(res => res.json())
+  .then(data => {
+    const product = {name, price, img: data.secure_url};
+    products.push(product);
+    renderProducts();
+    document.getElementById("productName").value = "";
+    document.getElementById("productPrice").value = "";
+    document.getElementById("productImg").value = "";
+  })
+  .catch(err => alert("Upload failed: " + err));
 }
 
 // Initial render
