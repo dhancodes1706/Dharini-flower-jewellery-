@@ -3,103 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Dharini Jewellery</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Admin - Dharini Flower Jewellery</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gradient-to-br from-pink-50 to-white min-h-screen flex items-center justify-center">
+<body class="bg-pink-50 font-poppins">
 
-  <div id="login-section" class="bg-white p-8 rounded-xl shadow-lg w-96 text-center">
-    <h2 class="text-2xl font-bold text-pink-700 mb-6">Admin Login</h2>
-    <input id="username" type="text" placeholder="Username" class="w-full mb-3 p-3 border rounded-lg">
-    <input id="password" type="password" placeholder="Password" class="w-full mb-3 p-3 border rounded-lg">
-    <button onclick="login()" class="w-full py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700">Login</button>
+  <div class="container mx-auto p-6">
+    <h3 class="text-2xl font-bold text-pink-800 mb-4">Admin Panel</h3>
+
+    <input id="productName" type="text" placeholder="Product Name" class="w-full border rounded-lg px-3 py-2 mb-3">
+    <textarea id="productDesc" placeholder="Product Description" class="w-full border rounded-lg px-3 py-2 mb-3"></textarea>
+    <input id="productPrice" type="text" placeholder="Price" class="w-full border rounded-lg px-3 py-2 mb-3">
+    <input id="productImage" type="file" accept="image/*" class="w-full border rounded-lg px-3 py-2 mb-3">
+
+    <button onclick="addProduct()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Add Product</button>
   </div>
 
-  <div id="admin-section" class="hidden max-w-3xl w-full bg-white p-8 rounded-xl shadow-lg">
-    <h2 class="text-3xl font-bold text-pink-700 mb-6">Manage Products</h2>
-
-    <form id="product-form" class="grid gap-4">
-      <input id="name" type="text" placeholder="Product Name" class="p-3 border rounded-lg">
-      <textarea id="description" placeholder="Product Description" class="p-3 border rounded-lg"></textarea>
-      <input id="price" type="number" placeholder="Price" class="p-3 border rounded-lg">
-      <input id="image" type="text" placeholder="Image URL" class="p-3 border rounded-lg">
-      <button type="submit" class="py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700">Add Product</button>
-    </form>
-
-    <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6"></div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
+  <script>
+    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyARKrfUDH1sJr5rIrx5VSpTA0mdigSUDew",
       authDomain: "dharini-flower-jewellery.firebaseapp.com",
       projectId: "dharini-flower-jewellery",
-      storageBucket: "dharini-flower-jewellery.firebasestorage.app",
+      storageBucket: "dharini-flower-jewellery.appspot.com",
       messagingSenderId: "953232943869",
-      appId: "1:953232943869:web:04b04ccbcbe3b0e759ac94",
-      measurementId: "G-V2ERYN2GGP"
+      appId: "1:953232943869:web:04b04ccbcbe3b0e759ac94"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    const loginSection = document.getElementById("login-section");
-    const adminSection = document.getElementById("admin-section");
+    // CLOUDINARY CONFIG
+    const CLOUD_NAME = "dyqf1xo36";
+    const UPLOAD_PRESET = "dharini-flower-jewellery";
 
-    function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      if (username === "admin" && password === "1234") {
-        loginSection.classList.add("hidden");
-        adminSection.classList.remove("hidden");
-        loadProducts();
-      } else {
-        alert("Invalid credentials!");
-      }
-    }
-    window.login = login;
+    async function addProduct() {
+      const name = document.getElementById("productName").value;
+      const desc = document.getElementById("productDesc").value;
+      const price = document.getElementById("productPrice").value;
+      const file = document.getElementById("productImage").files[0];
 
-    document.getElementById("product-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const description = document.getElementById("description").value;
-      const price = document.getElementById("price").value;
-      const image = document.getElementById("image").value;
+      if (!file) return alert("Please select an image.");
 
-      await addDoc(collection(db, "products"), { name, description, price, image });
-      alert("Product Added!");
-      e.target.reset();
-      loadProducts();
-    });
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
 
-    async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      const productList = document.getElementById("product-list");
-      productList.innerHTML = "";
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+        method: "POST",
+        body: formData
+      });
 
-      querySnapshot.forEach((docSnap) => {
-        const product = docSnap.data();
-        const div = document.createElement("div");
-        div.className = "p-4 bg-gray-50 border rounded-lg shadow flex flex-col";
-        div.innerHTML = `
-          <img src="${product.image}" class="h-40 w-full object-cover rounded-lg mb-2">
-          <h3 class="font-semibold text-pink-700">${product.name}</h3>
-          <p class="text-sm text-gray-600">${product.description}</p>
-          <p class="font-bold text-pink-800">₹${product.price}</p>
-          <button onclick="deleteProduct('${docSnap.id}')" class="mt-2 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Delete</button>
-        `;
-        productList.appendChild(div);
+      const data = await res.json();
+
+      db.collection("products").add({
+        name, desc, price, img: data.secure_url
+      }).then(() => {
+        alert("Product added successfully!");
+        document.getElementById("productName").value = "";
+        document.getElementById("productDesc").value = "";
+        document.getElementById("productPrice").value = "";
+        document.getElementById("productImage").value = "";
+      }).catch(err => {
+        console.error(err);
+        alert("Error adding product.");
       });
     }
-
-    async function deleteProduct(id) {
-      await deleteDoc(doc(db, "products", id));
-      loadProducts();
-    }
-    window.deleteProduct = deleteProduct;
   </script>
 </body>
 </html>
