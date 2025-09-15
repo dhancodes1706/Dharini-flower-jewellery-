@@ -1,135 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin - Dharini Flower Jewellery</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto&display=swap" rel="stylesheet">
-<style>
-body { margin:0; font-family: 'Roboto', sans-serif; background:#fff0f6; color:#333;}
-header { padding:2rem; text-align:center;}
-header h1 { font-family: 'Playfair Display', serif; font-size:2.5rem; color:#d63384; margin-bottom:0.5rem;}
-.admin-panel { background:#ffe6f0; padding:2rem; margin:2rem auto; max-width:500px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-.admin-panel input, .admin-panel button { width:80%; padding:0.6rem; margin:0.5rem 0; border-radius:8px; border:1px solid #ccc; font-size:1rem;}
-.admin-panel button { background:#d63384; color:white; border:none; cursor:pointer; transition:0.3s;}
-.admin-panel button:hover { background:#a61e63;}
-.admin-content { display:none; margin-top:1rem;}
-.products-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1.5rem; margin-top:1rem; }
-.product-card { background:white; border-radius:15px; box-shadow:0 10px 20px rgba(0,0,0,0.1); padding:1rem; text-align:center; position:relative;}
-.product-card img { width:100%; border-radius:12px; object-fit:cover; height:200px;}
-.product-card h3 { color:#d63384; margin:0.5rem 0 0.2rem;}
-.product-card p { margin:0; font-weight:bold;}
-.product-card button { margin-top:0.5rem; padding:0.4rem 0.8rem; border:none; border-radius:8px; background:#d63384; color:white; cursor:pointer; transition:0.3s;}
-.product-card button:hover { background:#a61e63;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Dharini Jewellery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-pink-50 to-white min-h-screen flex items-center justify-center">
 
-<header>
-  <h1>Admin Panel</h1>
-</header>
-
-<div class="admin-panel">
-  <h2 style="color:#d63384;">Login</h2>
-  <input type="text" id="adminUsername" placeholder="Username"><br>
-  <input type="password" id="adminPassword" placeholder="Password"><br>
-  <button onclick="loginAdmin()">Login</button>
-
-  <div class="admin-content" id="adminContent">
-    <h2 style="color:#d63384;">Add Product</h2>
-    <input type="text" id="productName" placeholder="Product Name"><br>
-    <input type="text" id="productPrice" placeholder="Price"><br>
-    <input type="file" id="productImg" accept="image/*"><br>
-    <button onclick="addProduct()">Add Product</button>
-
-    <h2 style="color:#d63384; margin-top:20px;">Current Products</h2>
-    <div class="products-grid" id="productsGrid"></div>
+  <div id="login-section" class="bg-white p-8 rounded-xl shadow-lg w-96 text-center">
+    <h2 class="text-2xl font-bold text-pink-700 mb-6">Admin Login</h2>
+    <input id="username" type="text" placeholder="Username" class="w-full mb-3 p-3 border rounded-lg">
+    <input id="password" type="password" placeholder="Password" class="w-full mb-3 p-3 border rounded-lg">
+    <button onclick="login()" class="w-full py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700">Login</button>
   </div>
-</div>
 
-<script>
-// Cloudinary
-const CLOUD_NAME = "dxe4vttzv";
-const UPLOAD_PRESET = "dharini_upload";
+  <div id="admin-section" class="hidden max-w-3xl w-full bg-white p-8 rounded-xl shadow-lg">
+    <h2 class="text-3xl font-bold text-pink-700 mb-6">Manage Products</h2>
 
-// Admin credentials
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "1234";
+    <form id="product-form" class="grid gap-4">
+      <input id="name" type="text" placeholder="Product Name" class="p-3 border rounded-lg">
+      <textarea id="description" placeholder="Product Description" class="p-3 border rounded-lg"></textarea>
+      <input id="price" type="number" placeholder="Price" class="p-3 border rounded-lg">
+      <input id="image" type="text" placeholder="Image URL" class="p-3 border rounded-lg">
+      <button type="submit" class="py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700">Add Product</button>
+    </form>
 
-// Products array
-let products = [];
-if(localStorage.getItem("products")) products = JSON.parse(localStorage.getItem("products"));
+    <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6"></div>
+  </div>
 
-// Render products in admin panel
-function renderProducts(){
-  const grid = document.getElementById("productsGrid");
-  grid.innerHTML = "";
-  products.forEach((p,i)=>{
-    const card = document.createElement("div");
-    card.className="product-card";
-    card.innerHTML=`
-      <img src="${p.img}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>${p.price}</p>
-      <button onclick="deleteProduct(${i})">Delete</button>
-    `;
-    grid.appendChild(card);
-  });
-  localStorage.setItem("products", JSON.stringify(products));
-}
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Delete product
-function deleteProduct(index){
-  if(confirm("Are you sure you want to delete this product?")){
-    products.splice(index,1);
-    renderProducts();
-  }
-}
+    const firebaseConfig = {
+      apiKey: "AIzaSyARKrfUDH1sJr5rIrx5VSpTA0mdigSUDew",
+      authDomain: "dharini-flower-jewellery.firebaseapp.com",
+      projectId: "dharini-flower-jewellery",
+      storageBucket: "dharini-flower-jewellery.firebasestorage.app",
+      messagingSenderId: "953232943869",
+      appId: "1:953232943869:web:04b04ccbcbe3b0e759ac94",
+      measurementId: "G-V2ERYN2GGP"
+    };
 
-// Admin login
-function loginAdmin(){
-  const user=document.getElementById("adminUsername").value;
-  const pass=document.getElementById("adminPassword").value;
-  if(user===ADMIN_USER && pass===ADMIN_PASS){
-    document.getElementById("adminContent").style.display="block";
-    alert("Admin login successful!");
-  } else {
-    alert("Incorrect username or password");
-  }
-}
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-// Add product with Cloudinary
-function addProduct(){
-  const name=document.getElementById("productName").value;
-  const price=document.getElementById("productPrice").value;
-  const file=document.getElementById("productImg").files[0];
+    const loginSection = document.getElementById("login-section");
+    const adminSection = document.getElementById("admin-section");
 
-  if(!name || !price || !file){
-    alert("Enter all fields and select an image");
-    return;
-  }
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      if (username === "admin" && password === "1234") {
+        loginSection.classList.add("hidden");
+        adminSection.classList.remove("hidden");
+        loadProducts();
+      } else {
+        alert("Invalid credentials!");
+      }
+    }
+    window.login = login;
 
-  const url=`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
-  const formData=new FormData();
-  formData.append("file",file);
-  formData.append("upload_preset",UPLOAD_PRESET);
+    document.getElementById("product-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+      const price = document.getElementById("price").value;
+      const image = document.getElementById("image").value;
 
-  fetch(url,{method:'POST', body:formData})
-  .then(res=>res.json())
-  .then(data=>{
-    const product={name, price, img:data.secure_url};
-    products.push(product);
-    renderProducts();
-    document.getElementById("productName").value="";
-    document.getElementById("productPrice").value="";
-    document.getElementById("productImg").value="";
-  })
-  .catch(err=>alert("Upload failed: "+err));
-}
+      await addDoc(collection(db, "products"), { name, description, price, image });
+      alert("Product Added!");
+      e.target.reset();
+      loadProducts();
+    });
 
-// Initial render
-renderProducts();
-</script>
+    async function loadProducts() {
+      const querySnapshot = await getDocs(collection(db, "products"));
+      const productList = document.getElementById("product-list");
+      productList.innerHTML = "";
 
+      querySnapshot.forEach((docSnap) => {
+        const product = docSnap.data();
+        const div = document.createElement("div");
+        div.className = "p-4 bg-gray-50 border rounded-lg shadow flex flex-col";
+        div.innerHTML = `
+          <img src="${product.image}" class="h-40 w-full object-cover rounded-lg mb-2">
+          <h3 class="font-semibold text-pink-700">${product.name}</h3>
+          <p class="text-sm text-gray-600">${product.description}</p>
+          <p class="font-bold text-pink-800">₹${product.price}</p>
+          <button onclick="deleteProduct('${docSnap.id}')" class="mt-2 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Delete</button>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    async function deleteProduct(id) {
+      await deleteDoc(doc(db, "products", id));
+      loadProducts();
+    }
+    window.deleteProduct = deleteProduct;
+  </script>
 </body>
 </html>
