@@ -3,21 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Dharini Flower Jewellery</title>
+  <title>Admin Login - Dharini Flower Jewellery</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-pink-50 font-poppins">
 
-  <div class="container mx-auto p-6">
+  <div id="loginDiv" class="container mx-auto p-6 max-w-md mt-20 bg-white rounded-xl shadow-md">
+    <h3 class="text-2xl font-bold text-pink-800 mb-4 text-center">Admin Login</h3>
+    <input id="adminID" type="text" placeholder="Enter Admin ID" class="w-full border rounded-lg px-3 py-2 mb-3">
+    <input id="adminPass" type="password" placeholder="Enter Password" class="w-full border rounded-lg px-3 py-2 mb-3">
+    <button onclick="checkLogin()" class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 w-full">Login</button>
+  </div>
+
+  <div id="panelDiv" class="container mx-auto p-6 hidden">
     <h3 class="text-2xl font-bold text-pink-800 mb-4">Admin Panel</h3>
 
     <input id="productName" type="text" placeholder="Product Name" class="w-full border rounded-lg px-3 py-2 mb-3">
     <textarea id="productDesc" placeholder="Product Description" class="w-full border rounded-lg px-3 py-2 mb-3"></textarea>
     <input id="productPrice" type="text" placeholder="Price" class="w-full border rounded-lg px-3 py-2 mb-3">
     <input id="productImage" type="file" accept="image/*" class="w-full border rounded-lg px-3 py-2 mb-3">
-
     <button onclick="addProduct()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Add Product</button>
   </div>
 
@@ -38,6 +44,22 @@
     // CLOUDINARY CONFIG
     const CLOUD_NAME = "dyqf1xo36";
     const UPLOAD_PRESET = "dharini-flower-jewellery";
+
+    // Admin credentials (change as you like)
+    const ADMIN_ID = "dhariniAdmin";
+    const ADMIN_PASS = "flower123";
+
+    function checkLogin() {
+      const id = document.getElementById("adminID").value;
+      const pass = document.getElementById("adminPass").value;
+      if (id === ADMIN_ID && pass === ADMIN_PASS) {
+        // hide login, show panel
+        document.getElementById("loginDiv").classList.add("hidden");
+        document.getElementById("panelDiv").classList.remove("hidden");
+      } else {
+        alert("Incorrect ID or Password!");
+      }
+    }
 
     async function addProduct() {
       const name = document.getElementById("productName").value;
