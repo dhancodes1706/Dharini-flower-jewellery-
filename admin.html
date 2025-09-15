@@ -45,15 +45,14 @@
     const CLOUD_NAME = "dyqf1xo36";
     const UPLOAD_PRESET = "dharini-flower-jewellery";
 
-    // Admin credentials (change as you like)
+    // Admin credentials
     const ADMIN_ID = "dhariniAdmin";
     const ADMIN_PASS = "flower123";
 
     function checkLogin() {
       const id = document.getElementById("adminID").value;
       const pass = document.getElementById("adminPass").value;
-      if (id === ADMIN_ID && pass === ADMIN_PASS) {
-        // hide login, show panel
+      if(id === ADMIN_ID && pass === ADMIN_PASS){
         document.getElementById("loginDiv").classList.add("hidden");
         document.getElementById("panelDiv").classList.remove("hidden");
       } else {
@@ -67,7 +66,7 @@
       const price = document.getElementById("productPrice").value;
       const file = document.getElementById("productImage").files[0];
 
-      if (!file) return alert("Please select an image.");
+      if(!file) return alert("Please select an image.");
 
       const formData = new FormData();
       formData.append("file", file);
@@ -80,6 +79,7 @@
 
       const data = await res.json();
 
+      // Add to Firestore and instantly visible on customer page
       db.collection("products").add({
         name, desc, price, img: data.secure_url
       }).then(() => {
