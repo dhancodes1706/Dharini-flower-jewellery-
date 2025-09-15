@@ -1,90 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Dharini Flower Jewellery</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto&display=swap" rel="stylesheet">
-<style>
-body { margin:0; font-family: 'Roboto', sans-serif; background:#fffaf0; color:#333;}
-header { padding:4rem 1rem; background: linear-gradient(135deg, #fce4ec, #f8bbd0); text-align:center; box-shadow: 0 4px 20px rgba(0,0,0,0.1);}
-header h1 { font-family: 'Playfair Display', serif; font-size:3.5rem; color:#c2185b; margin-bottom:1rem; letter-spacing:1px;}
-header p { font-size:1.3rem; max-width:700px; margin:0 auto; color:#880e4f; line-height:1.6; font-weight:500;}
-.products-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:2rem; margin:3rem 2rem;}
-.product-card { background:white; border-radius:20px; box-shadow:0 15px 30px rgba(0,0,0,0.15); padding:1.2rem; text-align:center; transition: transform 0.4s, box-shadow 0.4s;}
-.product-card:hover { transform: translateY(-10px); box-shadow:0 20px 40px rgba(0,0,0,0.2);}
-.product-card img { width:100%; border-radius:15px; object-fit:cover; height:220px; transition: transform 0.4s;}
-.product-card img:hover { transform: scale(1.05);}
-.product-card h3 { color:#c2185b; margin:0.7rem 0 0.3rem; font-size:1.4rem;}
-.product-card p { margin:0; font-weight:bold; font-size:1.1rem;}
-.product-card button { margin-top:0.6rem; padding:0.6rem 1.2rem; border:none; border-radius:12px; background:#c2185b; color:white; cursor:pointer; font-weight:600; transition:0.3s; font-size:1rem;}
-.product-card button:hover { background:#880e4f;}
-.admin-btn { position:fixed; bottom:20px; right:20px; background:#c2185b; color:white; border:none; padding:0.8rem 1.2rem; border-radius:50px; cursor:pointer; box-shadow:0 6px 15px rgba(0,0,0,0.25); transition:0.3s;}
-.admin-btn:hover { background:#880e4f;}
-section.about { padding:3rem 1rem; background:#fce4ec; margin-top:3rem; text-align:center; border-top:2px solid #f8bbd0;}
-section.about h2 { color:#c2185b; font-size:2rem; margin-bottom:1rem; letter-spacing:1px;}
-section.about p { font-size:1.2rem; max-width:700px; margin:0 auto; line-height:1.8; color:#880e4f;}
-footer { background:#f8bbd0; padding:2rem 1rem; text-align:center; margin-top:3rem; font-size:0.9rem; color:#880e4f;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dharini Flower Jewellery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Raleway', sans-serif; background: #fffafc; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+  </style>
 </head>
-<body>
+<body class="bg-gradient-to-b from-pink-50 to-white min-h-screen">
 
-<header>
-  <h1>Dharini Flower Jewellery</h1>
-  <p>Celebrating 2 generations of exquisite flower jewellery craftsmanship. Masterfully handcrafted for elegance and timeless beauty, blending tradition with contemporary style. Perfect for every celebration, real or artificial, curated with love and expertise.</p>
-</header>
+  <!-- HEADER -->
+  <header class="flex items-center justify-between px-6 py-4 shadow-md bg-white sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <img src=""C:\Users\tanus\Downloads\WhatsApp Image 2025-09-15 at 10.43.14_ba88ace7.jpg"" alt="Logo" class="w-12 h-12 rounded-full shadow-md">
+      <h1 class="text-2xl font-bold text-pink-700">Dharini Flower Jewellery</h1>
+    </div>
+    <a href="admin.html" class="text-sm px-3 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 shadow-md">Admin</a>
+  </header>
 
-<section class="products-grid" id="productsGrid">
-</section>
+  <!-- HERO -->
+  <section class="text-center py-10 px-4 bg-gradient-to-r from-pink-100 via-pink-50 to-pink-100 rounded-b-3xl shadow-md">
+    <h2 class="text-4xl font-bold text-pink-700 mb-3">Handmade Flower Jewellery</h2>
+    <p class="text-gray-600 max-w-xl mx-auto">Elegant, timeless and crafted with love across generations. Perfect for weddings, mehendi, and special occasions.</p>
+  </section>
 
-<section class="about">
-  <h2>About Us</h2>
-  <p>Dharini Flower Jewellery – Over 50 years of legacy passed through two generations. Started by our family to create artful, handcrafted flower jewellery. Today, Mom continues the tradition with unmatched attention to detail and premium quality. Contact: +91 8141229333 | +91 9773138773</p>
-</section>
+  <!-- PRODUCT GRID -->
+  <main class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="product-list">
+    <!-- Products will load here dynamically -->
+  </main>
 
-<button class="admin-btn" onclick="window.location.href='admin.html'">Admin</button>
+  <!-- FOOTER -->
+  <footer class="bg-pink-700 text-white text-center py-6 mt-12">
+    <p class="text-sm">&copy; 2025 Dharini Flower Jewellery. All Rights Reserved.</p>
+  </footer>
 
-<script>
-// WhatsApp number
-const whatsappNumber = "+918141229333";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Demo products
-let products = [
-  {name:"Rose Earrings", price:"₹499", img:"https://i.ibb.co/5nXW5wL/rose-earrings.jpg"},
-  {name:"Lotus Necklace", price:"₹799", img:"https://i.ibb.co/Z6gzN2v/lotus-necklace.jpg"},
-  {name:"Jasmine Bracelet", price:"₹399", img:"https://i.ibb.co/YR3nR0Z/jasmine-bracelet.jpg"}
-];
+    const firebaseConfig = {
+      apiKey: "AIzaSyARKrfUDH1sJr5rIrx5VSpTA0mdigSUDew",
+      authDomain: "dharini-flower-jewellery.firebaseapp.com",
+      projectId: "dharini-flower-jewellery",
+      storageBucket: "dharini-flower-jewellery.firebasestorage.app",
+      messagingSenderId: "953232943869",
+      appId: "1:953232943869:web:04b04ccbcbe3b0e759ac94",
+      measurementId: "G-V2ERYN2GGP"
+    };
 
-// Load products from localStorage if available
-if(localStorage.getItem("products")) products = JSON.parse(localStorage.getItem("products"));
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-// Render products
-function renderProducts(){
-  const grid = document.getElementById("productsGrid");
-  grid.innerHTML = "";
-  products.forEach((p,i)=>{
-    const card = document.createElement("div");
-    card.className="product-card";
-    card.innerHTML = `
-      <img src="${p.img}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>${p.price}</p>
-      <button onclick="orderProduct(${i})">Order on WhatsApp</button>
-    `;
-    grid.appendChild(card);
-  });
-}
+    async function loadProducts() {
+      const querySnapshot = await getDocs(collection(db, "products"));
+      const productList = document.getElementById("product-list");
+      productList.innerHTML = "";
 
-// WhatsApp order
-function orderProduct(index){
-  const p = products[index];
-  const message = `Hi Tanvi Shah, I would like to order the ${p.name} priced at ${p.price}. Is it available?`;
-  window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`);
-}
+      querySnapshot.forEach((doc) => {
+        const product = doc.data();
+        const productCard = `
+          <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition p-4 flex flex-col">
+            <img src="${product.image}" alt="${product.name}" class="w-full h-56 object-cover rounded-lg">
+            <div class="mt-4 flex-1">
+              <h3 class="text-lg font-semibold text-pink-700">${product.name}</h3>
+              <p class="text-sm text-gray-600">${product.description}</p>
+              <p class="mt-2 text-pink-800 font-bold">₹${product.price}</p>
+            </div>
+            <a href="https://wa.me/919773138773?text=I want to order ${encodeURIComponent(product.name)} (₹${product.price})"
+              class="mt-4 text-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 shadow-md">
+              Order on WhatsApp
+            </a>
+          </div>`;
+        productList.innerHTML += productCard;
+      });
+    }
 
-// Initial render
-renderProducts();
-</script>
-
+    loadProducts();
+  </script>
 </body>
 </html>
