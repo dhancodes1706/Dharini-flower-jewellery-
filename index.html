@@ -4,82 +4,85 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dharini Flower Jewellery</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
-    body { font-family: 'Raleway', sans-serif; background: #fffafc; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    body { font-family: 'Poppins', sans-serif; }
+    .card { transition: transform 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
   </style>
 </head>
-<body class="bg-gradient-to-b from-pink-50 to-white min-h-screen">
+<body class="bg-pink-50">
 
   <!-- HEADER -->
-  <header class="flex items-center justify-between px-6 py-4 shadow-md bg-white sticky top-0 z-50">
-    <div class="flex items-center space-x-3">
-      <img src="logo.jpg" alt="Logo" class="w-12 h-12 rounded-full shadow-md">
-      <h1 class="text-2xl font-bold text-pink-700">Dharini Flower Jewellery</h1>
+  <header class="bg-pink-200 shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <div class="flex items-center gap-3">
+        <img src="logo.jpg" alt="Logo" class="w-12 h-12 rounded-full shadow-md">
+        <h1 class="text-2xl font-bold text-pink-900">Dharini Flower Jewellery</h1>
+      </div>
+      <a href="admin.html" class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 shadow-md">Admin</a>
     </div>
-    <a href="admin.html" class="text-sm px-3 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 shadow-md">Admin</a>
   </header>
 
-  <!-- HERO -->
-  <section class="text-center py-10 px-4 bg-gradient-to-r from-pink-100 via-pink-50 to-pink-100 rounded-b-3xl shadow-md">
-    <h2 class="text-4xl font-bold text-pink-700 mb-3">Handmade Flower Jewellery</h2>
-    <p class="text-gray-600 max-w-xl mx-auto">Elegant, timeless and crafted with love across generations. Perfect for weddings, mehendi, and special occasions.</p>
-  </section>
-
-  <!-- PRODUCT GRID -->
-  <main class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="product-list">
-    <!-- Products will load here dynamically -->
+  <!-- PRODUCTS SECTION -->
+  <main class="container mx-auto p-6">
+    <h2 class="text-3xl font-semibold text-center mb-6 text-pink-800">Our Jewellery</h2>
+    <div id="products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="bg-pink-700 text-white text-center py-6 mt-12">
-    <p class="text-sm">&copy; 2025 Dharini Flower Jewellery. All Rights Reserved.</p>
-  </footer>
+  <!-- ABOUT US -->
+  <section class="bg-pink-100 py-8 mt-6">
+    <div class="container mx-auto text-center">
+      <h3 class="text-2xl font-bold mb-4 text-pink-800">About Us</h3>
+      <p class="text-gray-700 max-w-xl mx-auto mb-3">
+        Dharini Flower Jewellery is a legacy spanning over two generations, specializing in handcrafted real and artificial flower jewellery for every celebration.
+      </p>
+      <p class="text-pink-900 font-semibold">Contact: +91 9773138773 | +91 8141229333</p>
+    </div>
+  </section>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
+  <script>
+    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyARKrfUDH1sJr5rIrx5VSpTA0mdigSUDew",
       authDomain: "dharini-flower-jewellery.firebaseapp.com",
       projectId: "dharini-flower-jewellery",
-      storageBucket: "dharini-flower-jewellery.appshot.com",
+      storageBucket: "dharini-flower-jewellery.appspot.com",
       messagingSenderId: "953232943869",
-      appId: "1:953232943869:web:04b04ccbcbe3b0e759ac94",
-      measurementId: "G-V2ERYN2GGP"
+      appId: "1:953232943869:web:04b04ccbcbe3b0e759ac94"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    // INIT FIREBASE
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      const productList = document.getElementById("product-list");
-      productList.innerHTML = "";
-
-      querySnapshot.forEach((doc) => {
-        const product = doc.data();
-        const productCard = `
-          <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition p-4 flex flex-col">
-            <img src="${product.image}" alt="${product.name}" class="w-full h-56 object-cover rounded-lg">
-            <div class="mt-4 flex-1">
-              <h3 class="text-lg font-semibold text-pink-700">${product.name}</h3>
-              <p class="text-sm text-gray-600">${product.description}</p>
-              <p class="mt-2 text-pink-800 font-bold">₹${product.price}</p>
+    // FETCH PRODUCTS FROM FIRESTORE
+    function renderProducts() {
+      const container = document.getElementById("products");
+      container.innerHTML = "Loading...";
+      db.collection("products").get().then(snapshot => {
+        container.innerHTML = "";
+        snapshot.forEach(doc => {
+          const p = doc.data();
+          container.innerHTML += `
+            <div class="bg-white rounded-xl shadow-md overflow-hidden card">
+              <img src="${p.img}" alt="${p.name}" class="w-full h-56 object-cover">
+              <div class="p-4">
+                <h4 class="text-lg font-bold text-pink-700">${p.name}</h4>
+                <p class="text-gray-600 mb-2">${p.desc}</p>
+                <p class="font-semibold text-pink-900 mb-3">${p.price}</p>
+                <a href="https://wa.me/919773138773?text=I want to order: ${encodeURIComponent(p.name)}" target="_blank" class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700">Order on WhatsApp</a>
+              </div>
             </div>
-            <a href="https://wa.me/919773138773?text=I want to order ${encodeURIComponent(product.name)} (₹${product.price})"
-              class="mt-4 text-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 shadow-md">
-              Order on WhatsApp
-            </a>
-          </div>`;
-        productList.innerHTML += productCard;
+          `;
+        });
       });
     }
 
-    loadProducts();
+    renderProducts();
   </script>
 </body>
 </html>
+
